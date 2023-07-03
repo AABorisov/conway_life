@@ -1,0 +1,37 @@
+{
+  "name": "conway_life",
+  "version": "1.0.0",
+  "description": "Conway Life with WebGL and WebGPU",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AABorisov/conway_life.git"
+  },
+  "keywords": [
+    "webgl",
+    "webgpu",
+    "canvas",
+    "conway_life"
+  ],
+  "author": "AABorisov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AABorisov/conway_life/issues"
+  },
+  "homepage": "https://github.com/AABorisov/conway_life#readme",
+  "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@jest/globals": "^29.5.0",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageProvider": "v8"
+  }
+}

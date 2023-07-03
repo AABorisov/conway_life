@@ -1,0 +1,130 @@
+html,
+body,
+canvas {
+    padding: 0;
+    margin: 0;
+    image-rendering: pixelated;
+    user-select: none;
+    display: block;
+    height: 100%;
+    width: 100%;
+
+    color: rgba(255, 255, 255, .5);
+}
+
+html {
+    background: black;
+}
+
+html,
+input {
+    font: 24px/1 sans-serif;
+}
+
+.block {
+    margin: 12px 0;
+    padding: 0;
+}
+
+@media (min-width: 800px) {
+    html,
+    input {
+        font-size: 3vw;
+    }
+
+    .block {
+        margin: 1.5vw 0;
+        padding: 0;
+    }
+}
+
+#menu {
+    position: fixed;
+    left: 0;
+    top: 1vw;
+    bottom: 1vw;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+#menu:-webkit-scrollbar {
+    width: 0 !important;
+    display: none;
+}
+
+#stats {
+    position: fixed;
+    right: 0;
+    top: 1vw;
+}
+
+input {
+    display: block;
+    width: 6em;
+    background: rgba(0, 0, 0, .8);
+    border: none;
+    color: rgba(255, 255, 255, .5);
+    padding: 0;
+    text-indent: 1vw;
+}
+
+.control-button {
+    display: block;
+    cursor: pointer;
+    padding: 2px 1vw;
+    margin: 2px 0;
+    text-align: left;
+    background: rgba(0, 0, 0, .8);
+}
+
+input:hover, input:focus, .control-button:hover {
+    color: white;
+    background: rgba(0, 0, 0, .7);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+span {
+    display: block;
+    padding-left: 2vw;
+}
+
+label {
+    display: block;
+    margin-top: 1vw;
+    margin-left: 1vw;
+}
+
+input:read-only {
+    pointer-events: none;
+}
+
+input[type="radio"] {
+    appearance: none;
+    width: 0;
+    height: 0;
+}
+
+input[type="radio"]:checked + label {
+    font-weight: bold;
+    color: rgba(255, 255, 255, .7);
+}
+
+fieldset {
+    display: none;
+    margin-top: 1vw;
+}

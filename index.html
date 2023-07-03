@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="John Conway's Game of Life - Andrey Borisov" />
+    <title>John Conway's Game of Life - Andrey Borisov</title>
+    <link rel="icon" href="./favicon.png">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <canvas></canvas>
+    <div id="menu">
+        <input type="number" id="width" value="1000" min="4">
+        <span>⨉</span>
+        <input type="number" id="height" value="1000" min="4">
+
+        <div class="block">
+            <div id="reset" class="control-button">Reset</div>
+            <div id="stop"  class="control-button">Stop</div>
+            <div id="start" class="control-button">Start</div>
+        </div>
+
+        <div class="block">
+            <div id="random" class="control-button">Random</div>
+            <div id="clear" class="control-button">Clear</div>
+        </div>
+
+        <fieldset>
+            <legend>View:</legend>
+            <div>
+                <input type="radio" id="c2d" name="viewedBy" value="c2d" checked>
+                <label for="c2d">C2D</label>
+            </div>
+        
+            <div>
+                <input type="radio" id="gl" name="viewedBy" value="gl">
+                <label for="gl">GL</label>
+            </div>
+        
+            <div>
+                <input type="radio" id="gpu" name="viewedBy" value="gpu">
+                <label for="gpu">GPU</label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Calc:</legend>
+            <div>
+                <input type="radio" id="calc_js" name="calc" value="calc_js" checked>
+                <label for="calc_js">JS</label>
+            </div>
+
+            <div>
+                <input type="radio" id="calc_wasm" name="calc" value="calc_wasm">
+                <label for="calc_wasm">WASM</label>
+            </div>
+            <div>
+                <input type="radio" id="calc_gl" name="calc" value="calc_gl">
+                <label for="calc_gl">GL</label>
+            </div>
+
+            <div>
+                <input type="radio" id="calc_gpu" name="calc" value="calc_gpu">
+                <label for="calc_gpu">GPU</label>
+            </div>
+        </fieldset>
+    </div>
+
+    <div id="stats">
+        <div class="block">
+        <input id="fps" readonly value="FPS">
+        <label for="first_performance">First Gen</label>
+        <input id="first_performance" readonly value="0 ms">
+        <label for="performance">Mean Perf</label>
+        <input id="performance" readonly value="0 ms">
+    
+        <label for="generation">Gen #</label>
+        <input id="generation" readonly value="0">
+    
+        <label for="generation">Alive #</label>
+        <input id="alive_count" readonly value="0">
+    
+    </div>
+    </div>
+    <script type="module" src="index.js"></script>
+</body>
+
+</html>
