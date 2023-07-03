@@ -9,10 +9,18 @@ export async function initGameOfLife() {
     }
 
     function toggleCell(index) {
-        if (firstGeneration[index]) {
-            firstGeneration[index] = 0;
+        if (generationNumber) {
+            if (data[index]) {
+                data[index] = 0;
+            } else {
+                data[index] = 1;
+            }
         } else {
-            firstGeneration[index] = 1;
+            if (firstGeneration[index]) {
+                firstGeneration[index] = 0;
+            } else {
+                firstGeneration[index] = 1;
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { getNeighbours, getAlive, getAliveNeighbours } from "./gameOfLife-js.js";
+import { getNeighbours, getAlive, getAliveNeighbours, initGameOfLife } from "./gameOfLife-js.js";
 
 const neighboursTable = [{
         cellIndex: 0,
@@ -126,7 +126,7 @@ const aliveTable = [
     [1, 6, 0],
     [1, 7, 0],
     [1, 8, 0],
-]
+];
 
 describe('Get Alive function', () => {
     test.each(aliveTable)('for alive=%i and aliveNeighbours=%i should be %i', (
@@ -136,4 +136,320 @@ describe('Get Alive function', () => {
     ) => {
         expect(getAlive(alive, aliveNeighbours)).toEqual(expected);
     })
+});
+
+describe('Init GOL function', () => {
+    const expectedEmpty = new Int8Array(9);
+    const expectedRandom = new Int8Array([0, 1, 1, 0, 0, 0, 1, 0, 0]);
+    const expectedFull = new Int8Array([1, 1, 1, 1, 1, 1, 1, 1, 1]);
+    const SEED = 0.453433;
+    const THRESHOLD = 0.3;
+
+    test('check default values', async () => {
+        const {
+            getData,
+            getGenerationNumber, 
+        } = await initGameOfLife();
+
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(new Int8Array(0));
+    });
+
+    test('change dimensions', async () => {
+        const expected = new Int8Array(9)
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expected);
+    });
+
+    test('toggle cell first generation', async () => {
+        const expected = new Int8Array(9)
+        const {
+            getData,
+            onChangeDimensions,
+            toggleCell,
+            getGenerationNumber,
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getData()).toEqual(expected);
+        toggleCell(0);
+        expected[0] = 1;
+        expect(getData()).toEqual(expected);
+
+        toggleCell(0);
+        expected[0] = 0;
+        expect(getData()).toEqual(expected);
+        expect(getGenerationNumber()).toBe(0);
+    });
+
+    test('tick', async () => {
+        const expected = new Int8Array(9)
+        const {
+            getData,
+            onChangeDimensions,
+            toggleCell,
+            getGenerationNumber,
+            tick
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getData()).toEqual(expected);
+        toggleCell(0);
+        expected[0] = 1;
+        expect(getData()).toEqual(expected);
+
+        tick(3, 3);
+        expected[0] = 0;
+
+        expect(getGenerationNumber()).toBe(1);
+        expect(getData()).toEqual(expected);
+    });
+
+    test('toggle cell in data', async () => {
+        const expected = new Int8Array(9)
+        const {
+            getData,
+            onChangeDimensions,
+            toggleCell,
+            getGenerationNumber,
+            tick,
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getData()).toEqual(expected);
+        tick(3, 3);
+
+        expect(getGenerationNumber()).toBe(1);
+
+        toggleCell(0);
+        expected[0] = 1;
+        expect(getData()).toEqual(expected);
+
+        toggleCell(0);
+        expected[0] = 0;
+        expect(getData()).toEqual(expected);
+    });
+
+    test('generate random', async () => {
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+    });
+
+    test('generate random ticks', async () => {
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+            tick
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        tick(3, 3);
+        expect(getGenerationNumber()).toBe(1);
+        expect(getData()).toEqual(expectedFull);
+
+        tick(3, 3);
+        expect(getGenerationNumber()).toBe(2);
+        expect(getData()).toEqual(expectedEmpty);
+    });
+
+    test('clear first generation data', async () => {
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+            clearData
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        clearData();
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+    });
+
+    test('clear data after tick', async () => {
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+            tick,
+            clearData
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        tick(3, 3);
+        expect(getGenerationNumber()).toBe(1);
+        expect(getData()).toEqual(expectedFull);
+
+        clearData();
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+    });
+
+    test('rewind', async () => {
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+            tick,
+            rewind
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        tick(3, 3);
+        expect(getGenerationNumber()).toBe(1);
+        expect(getData()).toEqual(expectedFull);
+
+        rewind();
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+    });
+
+    test('resize same size', async () => {
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+    });
+
+    test('resize with great size', async () => {
+        const expected = new Int8Array(16);
+        expected.set(expectedRandom);
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        onChangeDimensions(16);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expected);
+    });
+
+    test('resize with less size', async () => {
+        const expected = new Int8Array(16);
+        expected.set(expectedRandom);
+        expected[12] = expected[13] = expected[14] = 1;
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+        } = await initGameOfLife();
+
+        onChangeDimensions(16);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(new Int8Array(16));
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expected);
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+    });
+
+    test('resize after tick', async () => {
+        const expected = new Int8Array(16);
+        expected.set(expectedFull);
+        const {
+            getData,
+            onChangeDimensions,
+            getGenerationNumber,
+            generateRandom,
+            tick,
+        } = await initGameOfLife();
+
+        onChangeDimensions(9);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedEmpty);
+
+        generateRandom(SEED, THRESHOLD);
+        expect(getGenerationNumber()).toBe(0);
+        expect(getData()).toEqual(expectedRandom);
+
+        tick(3, 3);
+        expect(getGenerationNumber()).toBe(1);
+        expect(getData()).toEqual(expectedFull);
+
+        onChangeDimensions(16);
+        expect(getGenerationNumber()).toBe(1);
+        expect(getData()).toEqual(expected);
+    });
 });
