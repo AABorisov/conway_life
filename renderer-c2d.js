@@ -1,4 +1,4 @@
-const MAX_RECTS_IN_PATH2D = 453433;
+export const MAX_RECTS_IN_PATH2D = 453433;
 const MAX_RECTS_IN_OUR_PATH = Math.floor(MAX_RECTS_IN_PATH2D / 16);
 
 export async function initRenderer(canvas) {

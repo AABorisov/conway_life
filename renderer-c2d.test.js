@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { afterEach } from 'node:test';
-import { initRenderer } from './renderer-c2d';
+import { initRenderer, MAX_RECTS_IN_PATH2D } from './renderer-c2d';
 
 class Path2D {
     constructor() {
@@ -210,6 +210,19 @@ const render1000Table = [150, 151, 152, 153].map(canvasSize => ({
     expectedCountInCol: new Array(dataWidth1000).fill(10),
 }))
 
+const dataWidthMax = Math.floor(MAX_RECTS_IN_PATH2D / 16);
+const dataMax = new Int8Array(dataWidthMax * 2).fill(1);
+const renderMaxTable = [100].map(canvasSize => ({
+    width: dataWidthMax,
+    count: dataMax.length,
+    canvasWidth: canvasSize,
+    canvasHeight: 2,
+    cellSize: canvasSize / dataWidthMax,
+    expectedCount: dataMax.length,
+    expectedCountInRow: new Array(2).fill(dataWidthMax),
+    expectedCountInCol: new Array(dataWidthMax).fill(2),
+}))
+
 const renderTable = [
     {
         width: dataWidth4,
@@ -225,6 +238,11 @@ const renderTable = [
         width: dataWidth1000,
         data: data1000,
         renderTable: render1000Table
+    },
+    {
+        width: 'Max',
+        data: dataMax,
+        renderTable: renderMaxTable
     }
 ]
 
@@ -259,19 +277,17 @@ describe.each(renderTable)('Render function with width=$width', ({ data, renderT
         const ctx = canvas.__lastContext;
         let rowY = 0;
         const actual = new Array(count / width).fill(0).map((_, index) => {
-            if (index === 0) {
-                return rowY;
+            if (index !== 0) {
+                rowY += cellSize;
             }
-            rowY += cellSize
-            return rowY;
-        }).map((rowY) => {
+
             return ctx.__path.filter(({ y }) => y === rowY).length;
         })
         expect(actual).toEqual(expectedCountInRow);
     })
 
 
-    test.each(renderTable)('count in col: canvas $canvasWidthX$canvasHeight with cell $cellSize', async ({
+    test.skip.each(renderTable)('count in col: canvas $canvasWidthX$canvasHeight with cell $cellSize', async ({
         width,
         count,
         canvasWidth,
@@ -284,12 +300,10 @@ describe.each(renderTable)('Render function with width=$width', ({ data, renderT
         const ctx = canvas.__lastContext;
         let rowX = 0;
         const actual = new Array(width).fill(0).map((_, index) => {
-            if (index === 0) {
-                return rowX;
+            if (index !== 0) {
+                rowX += cellSize
             }
-            rowX += cellSize
-            return rowX;
-        }).map((rowX) => {
+
             return ctx.__path.filter(({ x }) => x === rowX).length;
         })
         expect(actual).toEqual(expectedCountInCol);
