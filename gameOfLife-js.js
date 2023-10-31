@@ -137,5 +137,5 @@ export function getAliveNeighbours(data, neighbours) {
 }
 
 export function getAlive(alive, aliveNeighbours) {
-    return Number(!alive && aliveNeighbours === 2 || alive && (aliveNeighbours === 3 || aliveNeighbours === 4));
+    return Number(!alive && aliveNeighbours === 3 || alive && (aliveNeighbours === 2 || aliveNeighbours === 3));
 }
