@@ -4,6 +4,7 @@
   "description": "Conway Life with WebGL and WebGPU",
   "main": "index.js",
   "scripts": {
+    "start": "npx http-server . -p 3033",
     "test": "jest"
   },
   "repository": {
